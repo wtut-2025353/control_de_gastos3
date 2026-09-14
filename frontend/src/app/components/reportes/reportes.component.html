@@ -1,0 +1,236 @@
+<!-- Sidebar -->
+<aside class="sidebar" [class.open]="mobileMenuOpen()">
+  <div class="sidebar-top">
+    <div class="logo-container">
+      <img src="logo.png" alt="Control de Gastos" class="sidebar-logo" />
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" (click)="goDashboard(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Inicio</span>
+      </a>
+      <a class="nav-item" (click)="goIngresos(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>Ingresos</span>
+      </a>
+      <a class="nav-item" (click)="goGastos(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span>Gastos</span>
+      </a>
+      <a class="nav-item active" (click)="closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Reportes</span>
+      </a>
+      <a class="nav-item" (click)="goAjustes(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Ajustes</span>
+      </a>
+    </nav>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="sidebar-divider"></div>
+    <button class="logout-btn" (click)="logout()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Cerrar sesion</span>
+    </button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" [class.visible]="mobileMenuOpen()" (click)="closeMobileMenu()"></div>
+
+<div class="main-wrapper">
+  <header class="mobile-header">
+    <button class="menu-toggle" (click)="toggleMobileMenu()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="mobile-title">Reportes</span>
+  </header>
+
+  <main class="content">
+    <div class="header">
+      <div>
+        <h1>Reportes</h1>
+        <p class="subtitle">Analiza tus ingresos y gastos por periodo, tipo y categoría</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn-outline" (click)="exportExcel()">Excel</button>
+        <button type="button" class="btn-outline primary" (click)="exportPDF()">PDF</button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="form-card">
+      <div class="presets">
+        <button type="button" class="preset-btn" (click)="setPreset('1m')">1m</button>
+        <button type="button" class="preset-btn" (click)="setPreset('3m')">3m</button>
+        <button type="button" class="preset-btn" (click)="setPreset('6m')">6m</button>
+        <button type="button" class="preset-btn" (click)="setPreset('12m')">12m</button>
+        <button type="button" class="preset-btn" (click)="setPreset('year')">Este año</button>
+        <button type="button" class="preset-btn" (click)="setPreset('all')">Todo</button>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="from">Desde</label>
+          <input id="from" type="date" [(ngModel)]="from" name="from" (change)="loadReport()" />
+        </div>
+        <div class="field">
+          <label for="to">Hasta</label>
+          <input id="to" type="date" [(ngModel)]="to" name="to" (change)="loadReport()" />
+        </div>
+        <div class="field">
+          <label for="type">Tipo</label>
+          <select id="type" [(ngModel)]="type" name="type" (change)="onTypeChange()">
+            <option value="todos">Todos</option>
+            <option value="ingreso">Ingresos</option>
+            <option value="gasto">Gastos</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="category">Categoría</label>
+          <select id="category" [(ngModel)]="category" name="category" (change)="loadReport()">
+            <option value="todas">Todas</option>
+            @for (cat of categories(); track cat[0]) {
+              <option [value]="cat[0]">{{ cat[1] }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-grid single">
+        <div class="field">
+          <label for="search">Buscar por descripción</label>
+          <input id="search" type="text" [(ngModel)]="search" name="search" placeholder="Ej. salario, super..." (keyup.enter)="loadReport()" />
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button type="button" class="btn-primary" (click)="loadReport()">Generar reporte</button>
+        <button type="button" class="btn-secondary" (click)="clearFilters()">Limpiar</button>
+      </div>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert error">{{ errorMessage() }}</div>
+    }
+
+    @if (loading()) {
+      <div class="skeleton-list"></div>
+    } @else if (report()) {
+      <!-- KPIs -->
+      <div class="cards-grid">
+        <div class="summary-card income">
+          <span class="card-label">Ingresos</span>
+          <span class="card-value">{{ formatMoney(report()!.totals.income) }}</span>
+        </div>
+        <div class="summary-card expense">
+          <span class="card-label">Gastos</span>
+          <span class="card-value">{{ formatMoney(report()!.totals.expenses) }}</span>
+        </div>
+        <div class="summary-card" [class.positive]="report()!.totals.balance >= 0" [class.negative]="report()!.totals.balance < 0">
+          <span class="card-label">Balance</span>
+          <span class="card-value">{{ formatMoney(report()!.totals.balance) }}</span>
+        </div>
+        <div class="summary-card">
+          <span class="card-label">Movimientos</span>
+          <span class="card-value">{{ report()!.totals.count }}</span>
+        </div>
+      </div>
+
+      <!-- Gráfica mensual -->
+      <div class="chart-card">
+        <h2>Ingresos vs gastos por mes</h2>
+        @if (report()!.monthly.length === 0) {
+          <p class="empty-list">Sin datos en este periodo.</p>
+        } @else {
+          <div class="chart-container">
+            <canvas baseChart [data]="barChartData" [options]="barChartOptions" type="bar"></canvas>
+          </div>
+        }
+      </div>
+
+      <div class="bottom-grid">
+        <div class="bottom-card">
+          <h2>Gastos por categoría</h2>
+          @if (report()!.expenseByCategory.length === 0) {
+            <p class="empty-list">Sin gastos en este periodo.</p>
+          } @else {
+            <div class="chart-container small">
+              <canvas baseChart [data]="donutExpenseData" [options]="donutOptions" type="doughnut"></canvas>
+            </div>
+            <div class="category-list">
+              @for (cat of report()!.expenseByCategory; track cat.category) {
+                <div class="category-row">
+                  <span class="category-name">{{ getCategoryLabel(cat.category) }}</span>
+                  <span class="category-percent">{{ cat.percentage }}%</span>
+                  <span class="category-total">{{ formatMoney(cat.total) }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        <div class="bottom-card">
+          <h2>Ingresos por categoría</h2>
+          @if (report()!.incomeByCategory.length === 0) {
+            <p class="empty-list">Sin ingresos en este periodo.</p>
+          } @else {
+            <div class="chart-container small">
+              <canvas baseChart [data]="donutIncomeData" [options]="donutOptions" type="doughnut"></canvas>
+            </div>
+            <div class="category-list">
+              @for (cat of report()!.incomeByCategory; track cat.category) {
+                <div class="category-row">
+                  <span class="category-name">{{ getCategoryLabel(cat.category) }}</span>
+                  <span class="category-percent">{{ cat.percentage }}%</span>
+                  <span class="category-total">{{ formatMoney(cat.total) }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="list-card">
+        <h2>Movimientos ({{ movFiltered().length }})</h2>
+        <div class="mov-dates">
+          <div class="field">
+            <label for="movFrom">Desde</label>
+            <input id="movFrom" type="date" [(ngModel)]="movFrom" name="movFrom" (ngModelChange)="onMovDateChange()" />
+          </div>
+          <div class="field">
+            <label for="movTo">Hasta</label>
+            <input id="movTo" type="date" [(ngModel)]="movTo" name="movTo" (ngModelChange)="onMovDateChange()" />
+          </div>
+          <button type="button" class="btn-secondary small" (click)="clearMovDates()">Limpiar fechas</button>
+        </div>
+        @if (report()!.movements.length === 0) {
+          <div class="empty-list"><p>No hay movimientos con esos filtros.</p></div>
+        } @else if (movFiltered().length === 0) {
+          <div class="empty-list"><p>No hay movimientos en esas fechas.</p></div>
+        } @else {
+          <div class="table-wrapper">
+            <table class="report-table">
+              <thead>
+                <tr><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Categoría</th><th class="right">Monto</th></tr>
+              </thead>
+              <tbody>
+                @for (m of movPaged(); track m._id) {
+                  <tr>
+                    <td>{{ formatDate(m.date) }}</td>
+                    <td><span class="badge" [class.in]="m.type === 'ingreso'" [class.out]="m.type === 'gasto'">{{ m.type === 'ingreso' ? 'Ingreso' : 'Gasto' }}</span></td>
+                    <td>{{ m.description }}</td>
+                    <td>{{ getCategoryLabel(m.category) }}</td>
+                    <td class="right" [class.positive]="m.type === 'ingreso'" [class.negative]="m.type === 'gasto'">{{ m.type === 'ingreso' ? '+' : '-' }}{{ formatMoney(m.amount) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <button type="button" class="btn-secondary small" (click)="movPrev()" [disabled]="movPage() <= 1">Anterior</button>
+            <span class="page-info">Página {{ movPage() }} de {{ movTotalPages() }} ({{ movFiltered().length }})</span>
+            <button type="button" class="btn-secondary small" (click)="movNext()" [disabled]="movPage() >= movTotalPages()">Siguiente</button>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

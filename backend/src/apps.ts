@@ -6,6 +6,7 @@ import incomeRoutes from "./modules/incomes/routes/income.routes.js";
 import expenseRoutes from "./modules/expenses/routes/expense.routes.js";
 import budgetRoutes from "./modules/budgets/routes/budget.routes.js";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
+import reportRoutes from "./modules/reports/routes/report.routes.js";
 import { env } from "./config/env.js";
 
 export function createApp(): express.Express {
@@ -17,7 +18,7 @@ export function createApp(): express.Express {
       credentials: true
     })
   );
-  app.use(express.json());
+  app.use(express.json({ limit: "2mb" }));
 
   app.get("/", (_req, res) => {
     res.json({ message: "API control_de_gastos funcionando" });
@@ -29,6 +30,7 @@ export function createApp(): express.Express {
   app.use("/api/expenses", expenseRoutes);
   app.use("/api/budgets", budgetRoutes);
   app.use("/api/dashboard", dashboardRoutes);
+  app.use("/api/reports", reportRoutes);
 
   app.use((_req, res) => {
     res.status(404).json({ message: "Ruta no encontrada" });

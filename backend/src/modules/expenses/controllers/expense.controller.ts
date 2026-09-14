@@ -5,7 +5,8 @@ import {
   getTotalExpenseByUser,
   getMonthlyExpenseTotals,
   getExpensesByCategory,
-  deleteExpense
+  deleteExpense,
+  updateExpense
 } from "../services/expense.service.js";
 
 export async function createExpenseHandler(req: Request, res: Response): Promise<void> {
@@ -17,7 +18,8 @@ export async function createExpenseHandler(req: Request, res: Response): Promise
     const expense = await createExpense(req.user.id, req.body);
     res.status(201).json(expense);
   } catch (error) {
-    res.status(400).json({ message: "Error al crear gasto" });
+    const message = error instanceof Error ? error.message : "Error al crear gasto";
+    res.status(400).json({ message });
   }
 }
 
@@ -70,7 +72,26 @@ export async function deleteExpenseHandler(req: Request, res: Response): Promise
       return;
     }
     res.status(204).send();
-  } catch {
-    res.status(400).json({ message: "Error al eliminar gasto" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Error al eliminar gasto";
+    res.status(400).json({ message });
+  }
+}
+
+export async function updateExpenseHandler(req: Request, res: Response): Promise<void> {
+  if (!req.user) {
+    res.status(401).json({ message: "No autorizado" });
+    return;
+  }
+  try {
+    const updated = await updateExpense(req.user.id, String(req.params.id), req.body);
+    if (!updated) {
+      res.status(404).json({ message: "Gasto no encontrado" });
+      return;
+    }
+    res.json(updated);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Error al actualizar gasto";
+    res.status(400).json({ message });
   }
 }

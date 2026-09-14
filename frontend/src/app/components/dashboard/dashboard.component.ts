@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         cornerRadius: 8,
         padding: 12,
         callbacks: {
-          label: (ctx) => `${ctx.dataset.label}: Q${(ctx.parsed.y ?? 0).toLocaleString('es-GT', { minimumFractionDigits: 2 })}`
+          label: (ctx) => `${ctx.dataset.label}: Q${(ctx.parsed.y ?? 0).toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 15 })}`
         }
       }
     },
@@ -126,7 +126,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         cornerRadius: 8,
         padding: 10,
         callbacks: {
-          label: (ctx) => `${ctx.label}: Q${ctx.parsed.toLocaleString('es-GT', { minimumFractionDigits: 2 })}`
+          label: (ctx) => `${ctx.label}: Q${ctx.parsed.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 15 })}`
         }
       }
     }
@@ -256,12 +256,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.router.navigate(['/ingresos']);
   }
 
+  goGastos(): void {
+    this.router.navigate(['/gastos']);
+  }
+
+  goReportes(): void {
+    this.router.navigate(['/reportes']);
+  }
+
+  goAjustes(): void {
+    this.router.navigate(['/ajustes']);
+  }
+
   toggleBudgetOptions(): void {
     this.showBudgetOptions.update((v) => !v);
   }
 
   formatMoney(value: number): string {
-    return `Q${value.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `Q${value.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 15 })}`;
   }
 
   formatVariation(value: number): string {

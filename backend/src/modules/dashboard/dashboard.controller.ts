@@ -7,6 +7,10 @@ import {
 } from "../expenses/services/expense.service.js";
 import { getTotalBudgetByUserAndPeriod } from "../budgets/services/budget.service.js";
 
+function round15(n: number): number {
+  return Math.round(n * 1e15) / 1e15;
+}
+
 export async function getDashboardSummary(req: Request, res: Response): Promise<void> {
   if (!req.user) {
     res.status(401).json({ message: "No autorizado" });
@@ -34,8 +38,8 @@ export async function getDashboardSummary(req: Request, res: Response): Promise<
     getTotalBudgetByUserAndPeriod(userId, currentMonth, currentYear)
   ]);
 
-  const balance = totalIncome - totalExpenses;
-  const savings = totalIncome - totalExpenses;
+  const balance = round15(totalIncome - totalExpenses);
+  const savings = round15(totalIncome - totalExpenses);
 
   const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
   const previousYear = currentMonth === 1 ? currentYear - 1 : currentYear;
@@ -54,7 +58,7 @@ export async function getDashboardSummary(req: Request, res: Response): Promise<
     currIncome?.total ?? 0,
     prevIncome?.total ?? 0
   );
-  const expenseVariation = calcVariation(
+  const expenseVariation = -calcVariation(
     currExpense?.total ?? 0,
     prevExpense?.total ?? 0
   );
@@ -65,8 +69,10 @@ export async function getDashboardSummary(req: Request, res: Response): Promise<
   const savingsVariation = balanceVariation;
 
   const currentMonthExpenses = currExpense?.total ?? 0;
-  const budgetPercentage = totalBudget > 0
-    ? Math.round((currentMonthExpenses / totalBudget) * 100)
+  const currentMonthIncome = currIncome?.total ?? 0;
+  const effectiveBudget = totalBudget > 0 ? totalBudget : currentMonthIncome;
+  const budgetPercentage = effectiveBudget > 0
+    ? Math.round((currentMonthExpenses / effectiveBudget) * 100)
     : 0;
 
   res.json({
@@ -74,7 +80,7 @@ export async function getDashboardSummary(req: Request, res: Response): Promise<
     totalIncome,
     totalExpenses,
     savings,
-    totalBudget,
+    totalBudget: effectiveBudget,
     budgetSpent: currentMonthExpenses,
     budgetPercentage,
     incomeVariation,

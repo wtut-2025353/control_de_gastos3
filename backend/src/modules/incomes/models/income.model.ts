@@ -3,7 +3,7 @@ import { Schema, model, type InferSchemaType } from "mongoose";
 const incomeSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    description: { type: String, required: true, trim: true },
+    description: { type: String, required: true, trim: true, minlength: 1, maxlength: 200 },
     amount: { type: Number, required: true, min: 0 },
     category: {
       type: String,

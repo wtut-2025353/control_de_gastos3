@@ -20,15 +20,14 @@
         </svg>
         <span>Ingresos</span>
       </a>
-      <a class="nav-item" href="#" (click)="$event.preventDefault(); closeMobileMenu()">
+      <a class="nav-item" (click)="goGastos(); closeMobileMenu()">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="16"/>
           <line x1="8" y1="12" x2="16" y2="12"/>
         </svg>
         <span>Gastos</span>
       </a>
-      <a class="nav-item" href="#" (click)="$event.preventDefault(); closeMobileMenu()">
+      <a class="nav-item" (click)="goReportes(); closeMobileMenu()">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="20" x2="18" y2="10"/>
           <line x1="12" y1="20" x2="12" y2="4"/>
@@ -36,7 +35,7 @@
         </svg>
         <span>Reportes</span>
       </a>
-      <a class="nav-item" href="#" (click)="$event.preventDefault(); closeMobileMenu()">
+      <a class="nav-item" (click)="goAjustes(); closeMobileMenu()">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -81,6 +80,7 @@
     <div class="header">
       <h1>Registrar ingreso</h1>
       <p class="subtitle">Ingrese los datos de su ingreso</p>
+      <p class="total-line">Total acumulado: <strong>{{ formatMoney(total()) }}</strong></p>
     </div>
 
     <!-- Messages -->
@@ -143,14 +143,26 @@
         </div>
 
         <button type="submit" class="btn-primary" [disabled]="loading()">
-          {{ loading() ? 'Guardando...' : 'Guardar ingreso' }}
+          {{ loading() ? 'Guardando...' : (editingId ? 'Actualizar ingreso' : 'Guardar ingreso') }}
         </button>
+        @if (editingId) {
+          <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancelar edición</button>
+        }
       </form>
     </div>
 
     <!-- Incomes list -->
     <div class="list-card">
       <h2>Ingresos registrados</h2>
+      <div class="field search-field">
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          name="searchIngresos"
+          placeholder="Buscar por descripción o categoría..."
+          (ngModelChange)="onSearchChange()"
+        />
+      </div>
 
       @if (loadingList()) {
         <div class="skeleton-list"></div>
@@ -158,17 +170,30 @@
         <div class="empty-list">
           <p>No hay ingresos registrados.</p>
         </div>
+      } @else if (filteredIncomes().length === 0) {
+        <div class="empty-list">
+          <p>No hay resultados para esa búsqueda.</p>
+        </div>
       } @else {
         <div class="income-list">
-          @for (income of incomes(); track income._id) {
+          @for (income of pagedIncomes(); track income._id) {
             <div class="income-row">
               <div class="income-info">
                 <span class="income-desc">{{ income.description }}</span>
                 <span class="income-meta">{{ getCategoryLabel(income.category) }} &middot; {{ formatDate(income.date) }}</span>
               </div>
-              <span class="income-amount">{{ formatMoney(income.amount) }}</span>
+              <div class="income-actions">
+                <span class="income-amount">{{ formatMoney(income.amount) }}</span>
+                <button type="button" class="btn-link" (click)="startEdit(income)">Editar</button>
+                <button type="button" class="btn-link danger" (click)="deleteIncome(income._id)">Eliminar</button>
+              </div>
             </div>
           }
+        </div>
+        <div class="pagination">
+          <button type="button" class="btn-secondary small" (click)="prevPage()" [disabled]="currentPage() <= 1">Anterior</button>
+          <span class="page-info">Página {{ currentPage() }} de {{ totalPages() }} ({{ filteredIncomes().length }})</span>
+          <button type="button" class="btn-secondary small" (click)="nextPage()" [disabled]="currentPage() >= totalPages()">Siguiente</button>
         </div>
       }
     </div>

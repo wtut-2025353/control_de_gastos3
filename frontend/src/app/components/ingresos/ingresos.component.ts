@@ -47,6 +47,11 @@ export class IngresosComponent implements OnInit {
   amount: number | null = null;
   category = 'otros';
   date = '';
+  editingId: string | null = null;
+  total = signal(0);
+  searchText = '';
+  currentPage = signal(1);
+  readonly pageSize = 10;
 
   categories = Object.entries(CATEGORY_LABELS);
 
@@ -56,7 +61,7 @@ export class IngresosComponent implements OnInit {
       this.userName.set(user.name.split(' ')[0]);
     }
     const today = new Date();
-    this.date = today.toISOString().split('T')[0];
+    this.date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     this.loadIncomes();
     this.idleService.start();
   }
@@ -70,10 +75,82 @@ export class IngresosComponent implements OnInit {
     this.http.get<Income[]>('/api/incomes').subscribe({
       next: (data) => {
         this.incomes.set(data);
+        this.updateTotal();
         this.loadingList.set(false);
       },
       error: () => {
         this.loadingList.set(false);
+      }
+    });
+  }
+
+  updateTotal(): void {
+    const sum = this.incomes().reduce((acc, i) => acc + Number(i.amount), 0);
+    this.total.set(sum);
+  }
+
+  filteredIncomes(): Income[] {
+    const q = this.searchText.trim().toLowerCase();
+    if (!q) return this.incomes();
+    return this.incomes().filter((i) =>
+      i.description.toLowerCase().includes(q) ||
+      this.getCategoryLabel(i.category).toLowerCase().includes(q)
+    );
+  }
+
+  totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredIncomes().length / this.pageSize));
+  }
+
+  pagedIncomes(): Income[] {
+    const page = Math.min(this.currentPage(), this.totalPages());
+    const start = (page - 1) * this.pageSize;
+    return this.filteredIncomes().slice(start, start + this.pageSize);
+  }
+
+  onSearchChange(): void {
+    this.currentPage.set(1);
+  }
+
+  prevPage(): void {
+    this.currentPage.update((p) => Math.max(1, p - 1));
+  }
+
+  nextPage(): void {
+    this.currentPage.update((p) => Math.min(this.totalPages(), p + 1));
+  }
+
+  startEdit(income: Income): void {
+    this.editingId = income._id;
+    this.description = income.description;
+    this.amount = income.amount;
+    this.category = income.category;
+    this.date = income.date.split('T')[0];
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  cancelEdit(): void {
+    this.editingId = null;
+    this.description = '';
+    this.amount = null;
+    this.category = 'otros';
+    const today = new Date();
+    this.date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  }
+
+  deleteIncome(id: string): void {
+    if (!confirm('¿Eliminar este ingreso?')) return;
+    this.http.delete(`/api/incomes/${id}`).subscribe({
+      next: () => {
+        this.incomes.update((list) => list.filter((i) => i._id !== id));
+        this.updateTotal();
+        this.successMessage.set('Ingreso eliminado correctamente');
+        setTimeout(() => this.successMessage.set(''), 3000);
+      },
+      error: (error) => {
+        this.errorMessage.set(error?.error?.message ?? 'Error al eliminar el ingreso');
       }
     });
   }
@@ -99,15 +176,34 @@ export class IngresosComponent implements OnInit {
       date: this.date
     };
 
+    if (this.editingId) {
+      this.http.put<Income>(`/api/incomes/${this.editingId}`, body).subscribe({
+        next: (updated) => {
+          this.incomes.update((list) => list.map((i) => (i._id === updated._id ? updated : i)));
+          this.updateTotal();
+          this.successMessage.set('Ingreso actualizado correctamente');
+          this.cancelEdit();
+          this.loading.set(false);
+          setTimeout(() => this.successMessage.set(''), 3000);
+        },
+        error: (error) => {
+          this.loading.set(false);
+          this.errorMessage.set(error?.error?.message ?? 'Error al actualizar el ingreso');
+        }
+      });
+      return;
+    }
+
     this.http.post<Income>('/api/incomes', body).subscribe({
       next: (created) => {
         this.incomes.update((list) => [created, ...list]);
+        this.updateTotal();
         this.successMessage.set('Ingreso registrado correctamente');
         this.description = '';
         this.amount = null;
         this.category = 'otros';
         const today = new Date();
-        this.date = today.toISOString().split('T')[0];
+        this.date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         this.loading.set(false);
         setTimeout(() => this.successMessage.set(''), 3000);
       },
@@ -136,8 +232,20 @@ export class IngresosComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
+  goGastos(): void {
+    this.router.navigate(['/gastos']);
+  }
+
+  goReportes(): void {
+    this.router.navigate(['/reportes']);
+  }
+
+  goAjustes(): void {
+    this.router.navigate(['/ajustes']);
+  }
+
   formatMoney(value: number): string {
-    return `Q${value.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `Q${value.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 15 })}`;
   }
 
   formatDate(dateStr: string): string {

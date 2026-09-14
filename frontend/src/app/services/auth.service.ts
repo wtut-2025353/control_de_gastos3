@@ -8,6 +8,7 @@ export interface AuthUser {
   email: string;
   role: string;
   avatar?: string | null;
+  googleId?: string | null;
 }
 
 export interface AuthResult {
@@ -25,6 +26,10 @@ export class AuthService {
 
   login(email: string, password: string): Observable<AuthResult> {
     return this.http.post<AuthResult>(`${this.api}/login`, { email, password });
+  }
+
+  register(name: string, email: string, password: string): Observable<AuthResult> {
+    return this.http.post<AuthResult>(`${this.api}/register`, { name, email, password });
   }
 
   loginWithGoogle(credential: string): Observable<AuthResult> {

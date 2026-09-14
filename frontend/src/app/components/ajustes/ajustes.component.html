@@ -1,0 +1,204 @@
+<!-- Sidebar -->
+<aside class="sidebar" [class.open]="mobileMenuOpen()">
+  <div class="sidebar-top">
+    <div class="logo-container">
+      <img src="logo.png" alt="Control de Gastos" class="sidebar-logo" />
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" (click)="goDashboard(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Inicio</span>
+      </a>
+      <a class="nav-item" (click)="goIngresos(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>Ingresos</span>
+      </a>
+      <a class="nav-item" (click)="goGastos(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span>Gastos</span>
+      </a>
+      <a class="nav-item" (click)="goReportes(); closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Reportes</span>
+      </a>
+      <a class="nav-item active" (click)="closeMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Ajustes</span>
+      </a>
+    </nav>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="sidebar-divider"></div>
+    <button class="logout-btn" (click)="logout()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Cerrar sesion</span>
+    </button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" [class.visible]="mobileMenuOpen()" (click)="closeMobileMenu()"></div>
+
+<div class="main-wrapper">
+  <header class="mobile-header">
+    <button class="menu-toggle" (click)="toggleMobileMenu()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="mobile-title">Ajustes</span>
+  </header>
+
+  <main class="content">
+    <div class="header">
+      <h1>Ajustes</h1>
+      <p class="subtitle">Administra tu perfil, contraseña y sesión</p>
+    </div>
+
+    <!-- Perfil -->
+    <div class="form-card">
+      <div class="profile-head">
+        @if (avatarPreview() ?? user()?.avatar) {
+          <img class="avatar-img" [src]="avatarPreview() ?? user()?.avatar" alt="Foto de perfil" />
+        } @else {
+          <div class="avatar">{{ getInitial() }}</div>
+        }
+        <div>
+          <h2>Perfil</h2>
+          <p class="muted">{{ user()?.email ?? '' }} · Rol: {{ user()?.role ?? '' }}</p>
+          @if (isGoogleUser()) {
+            <p class="muted">Foto de tu cuenta de Google</p>
+          }
+        </div>
+      </div>
+      @if (!isGoogleUser()) {
+        <div class="avatar-actions">
+          <label class="btn-outline file-label">
+            Elegir foto
+            <input type="file" accept="image/*" (change)="onAvatarFile($event)" hidden />
+          </label>
+          @if (avatarPreview()) {
+            <button type="button" class="btn-primary small" (click)="saveAvatar()" [disabled]="savingAvatar()">
+              {{ savingAvatar() ? 'Guardando...' : 'Guardar foto' }}
+            </button>
+            <button type="button" class="btn-secondary small" (click)="cancelAvatarPreview()">Cancelar</button>
+          } @else if (user()?.avatar) {
+            <button type="button" class="btn-secondary small" (click)="removeAvatar()" [disabled]="savingAvatar()">Quitar foto</button>
+          }
+        </div>
+      }
+      @if (profileSuccess()) { <div class="alert success">{{ profileSuccess() }}</div> }
+      @if (profileError()) { <div class="alert error">{{ profileError() }}</div> }
+      <form (ngSubmit)="saveProfile()">
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">Nombre</label>
+            <input id="name" type="text" [(ngModel)]="name" name="name" placeholder="Tu nombre" required />
+          </div>
+          <div class="field">
+            <label for="email">Correo (no editable)</label>
+            <input id="email" type="email" [value]="user()?.email ?? ''" disabled />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" [disabled]="loadingProfile()">
+          {{ loadingProfile() ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Contraseña -->
+    <div class="form-card">
+      <h2>Cambiar contraseña</h2>
+      <p class="muted">Si entraste con Google y nunca pusiste clave, deja la actual vacía y crea una nueva.</p>
+      @if (passwordSuccess()) { <div class="alert success">{{ passwordSuccess() }}</div> }
+      @if (passwordError()) { <div class="alert error">{{ passwordError() }}</div> }
+      <form (ngSubmit)="changePassword()">
+        <div class="form-grid">
+          <div class="field">
+            <label for="current">Contraseña actual</label>
+            <input id="current" type="password" [(ngModel)]="currentPassword" name="currentPassword" placeholder="••••••" autocomplete="current-password" />
+          </div>
+          <div class="field">
+            <label for="new">Nueva contraseña</label>
+            <input id="new" type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+          </div>
+          <div class="field">
+            <label for="confirm">Confirmar nueva</label>
+            <input id="confirm" type="password" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="Repite la nueva" autocomplete="new-password" />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" [disabled]="loadingPassword()">
+          {{ loadingPassword() ? 'Actualizando...' : 'Actualizar contraseña' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Sesión -->
+    <div class="list-card">
+      <h2>Sesión</h2>
+      <p class="muted">{{ sessionInfo() }}</p>
+      <div class="session-actions">
+        <button type="button" class="btn-secondary" (click)="goDashboard()">Volver al inicio</button>
+        <button type="button" class="btn-danger" (click)="logout()">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <!-- Administración (solo admin, desplegable) -->
+    @if (isAdmin()) {
+      <div class="list-card admin-card">
+        <div class="admin-head" (click)="toggleAdmin()">
+          <div>
+            <h2>Administración de usuarios</h2>
+            <p class="muted">Solo visible para administradores · {{ adminTotal() }} usuarios</p>
+          </div>
+          <span class="chevron">{{ showAdmin() ? '▲' : '▼' }}</span>
+        </div>
+        @if (showAdmin()) {
+          <p class="muted">Puedes buscar, paginar de 10 en 10, exportar y cambiar roles. El cambio se aplica cuando el usuario vuelva a iniciar sesión.</p>
+          @if (adminSuccess()) { <div class="alert success">{{ adminSuccess() }}</div> }
+          @if (adminError()) { <div class="alert error">{{ adminError() }}</div> }
+          <div class="admin-toolbar">
+            <div class="field search-field">
+              <input type="text" [(ngModel)]="adminSearch" name="adminSearch" placeholder="Buscar por nombre o correo..." (ngModelChange)="onAdminSearch()" />
+            </div>
+            <div class="admin-export">
+              <button type="button" class="btn-outline" (click)="exportUsersExcel()">Excel</button>
+              <button type="button" class="btn-outline" (click)="exportUsersPDF()">PDF</button>
+            </div>
+          </div>
+          @if (adminLoading()) {
+            <div class="skeleton-list"></div>
+          } @else if (adminUsers().length === 0) {
+            <div class="empty-list"><p>No hay usuarios.</p></div>
+          } @else {
+            <div class="table-wrapper">
+              <table class="report-table">
+                <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th class="right">Acciones</th></tr></thead>
+                <tbody>
+                  @for (u of adminUsers(); track u.id) {
+                    <tr>
+                      <td>{{ u.name }}</td>
+                      <td>{{ u.email }}</td>
+                      <td><span class="badge" [class.in]="u.role === 'admin'" [class.out]="u.role !== 'admin'">{{ u.role }}</span></td>
+                      <td class="right">
+                        @if (user()?.id === u.id) {
+                          <span class="muted">Eres tú</span>
+                        } @else if (u.role === 'admin') {
+                          <button type="button" class="btn-link danger" (click)="changeRole(u, 'user')" [disabled]="changingRoleId() === u.id">Quitar admin</button>
+                        } @else {
+                          <button type="button" class="btn-link" (click)="changeRole(u, 'admin')" [disabled]="changingRoleId() === u.id">Hacer admin</button>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <button type="button" class="btn-secondary small" (click)="adminPrev()" [disabled]="adminPage() <= 1">Anterior</button>
+              <span class="page-info">Página {{ adminPage() }} de {{ adminTotalPages() }} ({{ adminTotal() }})</span>
+              <button type="button" class="btn-secondary small" (click)="adminNext()" [disabled]="adminPage() >= adminTotalPages()">Siguiente</button>
+            </div>
+          }
+        }
+      </div>
+    }
+  </main>
+</div>

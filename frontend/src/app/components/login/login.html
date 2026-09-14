@@ -49,7 +49,7 @@
       <h2>Bienvenido de nuevo</h2>
       <p class="subtitle">
         &iquest;No tienes cuenta?
-        <a href="#" (click)="$event.preventDefault()">Crea una nueva ahora</a>
+        <a href="/register" (click)="$event.preventDefault(); goRegister()">Crea una nueva ahora</a>
       </p>
 
       @if (errorMessage()) {

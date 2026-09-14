@@ -1,15 +1,22 @@
 import { Types } from "mongoose";
 import { Income } from "../models/income.model.js";
+import { validateAmount, validateDate } from "../../expenses/services/expense.service.js";
+
+function round15(n: number): number {
+  return Math.round(n * 1e15) / 1e15;
+}
 
 export interface CreateIncomeData {
   description: string;
   amount: number;
   category: string;
-  date?: Date;
+  date?: Date | string;
 }
 
 export async function createIncome(userId: string, data: CreateIncomeData) {
-  return Income.create({ user: new Types.ObjectId(userId), ...data, category: data.category as any });
+  validateAmount(data.amount);
+  const date = validateDate(data.date);
+  return Income.create({ user: new Types.ObjectId(userId), ...data, date, category: data.category as any });
 }
 
 export async function getIncomesByUser(userId: string) {
@@ -21,7 +28,11 @@ export async function getTotalIncomeByUser(userId: string) {
     { $match: { user: new Types.ObjectId(userId) } },
     { $group: { _id: null, total: { $sum: "$amount" } } }
   ]);
-  return result[0]?.total ?? 0;
+  return round15(result[0]?.total ?? 0);
+}
+
+export async function deleteIncome(userId: string, incomeId: string) {
+  return Income.findOneAndDelete({ _id: incomeId, user: new Types.ObjectId(userId) });
 }
 
 export async function getMonthlyIncomeTotals(userId: string, months: number) {
@@ -43,6 +54,16 @@ export async function getMonthlyIncomeTotals(userId: string, months: number) {
   return result.map((r) => ({
     month: r._id.month,
     year: r._id.year,
-    total: r.total
+    total: round15(r.total)
   }));
+}
+
+export async function updateIncome(userId: string, incomeId: string, data: Partial<CreateIncomeData>) {
+  if (data.amount !== undefined) validateAmount(data.amount);
+  if (data.date !== undefined) validateDate(data.date);
+  return Income.findOneAndUpdate(
+    { _id: incomeId, user: new Types.ObjectId(userId) },
+    { ...data, category: data.category as any },
+    { new: true, runValidators: true }
+  );
 }

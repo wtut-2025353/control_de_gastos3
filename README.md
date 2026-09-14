@@ -24,7 +24,7 @@ Guía corta para correr el proyecto en local.
 ### Paso 1: Clonar el repositorio
 
 ```
-git clone https://github.com/cxocop-2025287/control-de-gastos
+git clone https://github.com/wtut-2025353/control-de-gastos3
 ```
 
 ### Paso 2: Abrir una terminal
@@ -48,9 +48,9 @@ En la carpeta `backend` hay un archivo `.env.example`, solo hay que copiarlo com
 ```
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/control_de_gastos
-JWT_SECRET=tu_clave_secreta
+JWT_SECRET=3513ac9b65b0430848227ad2fec1b6ed251b3b94dd0416efdcd2f161354b622e
 JWT_EXPIRES_IN=3h
-GOOGLE_CLIENT_ID=tu_id_de_google
+GOOGLE_CLIENT_ID=923643550096-kvgbige4bc3ms2khrr87o55gfbnqt63t.apps.googleusercontent.com
 CLIENT_URL=http://localhost:4200
 ```
 

@@ -124,6 +124,10 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     this.password = '';
   }
 
+  goRegister(): void {
+    this.router.navigate(['/register']);
+  }
+
   private readonly handleGoogleResponse = (response: { credential?: string }): void => {
     if (!response.credential) {
       this.errorMessage.set('No se recibió la credencial de Google');

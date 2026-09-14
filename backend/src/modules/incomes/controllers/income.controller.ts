@@ -3,7 +3,9 @@ import {
   createIncome,
   getIncomesByUser,
   getTotalIncomeByUser,
-  getMonthlyIncomeTotals
+  getMonthlyIncomeTotals,
+  deleteIncome,
+  updateIncome
 } from "../services/income.service.js";
 
 export async function createIncomeHandler(req: Request, res: Response): Promise<void> {
@@ -15,7 +17,8 @@ export async function createIncomeHandler(req: Request, res: Response): Promise<
     const income = await createIncome(req.user.id, req.body);
     res.status(201).json(income);
   } catch (error) {
-    res.status(400).json({ message: "Error al crear ingreso" });
+    const message = error instanceof Error ? error.message : "Error al crear ingreso";
+    res.status(400).json({ message });
   }
 }
 
@@ -45,4 +48,40 @@ export async function getMonthlyIncomeHandler(req: Request, res: Response): Prom
   const months = Number(req.query.months) || 6;
   const totals = await getMonthlyIncomeTotals(req.user.id, months);
   res.json(totals);
+}
+
+export async function deleteIncomeHandler(req: Request, res: Response): Promise<void> {
+  if (!req.user) {
+    res.status(401).json({ message: "No autorizado" });
+    return;
+  }
+  try {
+    const deleted = await deleteIncome(req.user.id, String(req.params.id));
+    if (!deleted) {
+      res.status(404).json({ message: "Ingreso no encontrado" });
+      return;
+    }
+    res.status(204).send();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Error al eliminar ingreso";
+    res.status(400).json({ message });
+  }
+}
+
+export async function updateIncomeHandler(req: Request, res: Response): Promise<void> {
+  if (!req.user) {
+    res.status(401).json({ message: "No autorizado" });
+    return;
+  }
+  try {
+    const updated = await updateIncome(req.user.id, String(req.params.id), req.body);
+    if (!updated) {
+      res.status(404).json({ message: "Ingreso no encontrado" });
+      return;
+    }
+    res.json(updated);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Error al actualizar ingreso";
+    res.status(400).json({ message });
+  }
 }

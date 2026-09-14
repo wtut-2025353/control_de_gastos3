@@ -284,13 +284,15 @@
   margin: 0 0 1rem;
 }
 
-.income-list {
+.income-list,
+.expense-list {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.income-row {
+.income-row,
+.expense-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -298,28 +300,33 @@
   border-bottom: 1px solid #f0f2f3;
 }
 
-.income-row:last-child {
+.income-row:last-child,
+.expense-row:last-child {
   border-bottom: none;
 }
 
-.income-info {
+.income-info,
+.expense-info {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
 }
 
-.income-desc {
+.income-desc,
+.expense-desc {
   font-size: 0.9rem;
   font-weight: 500;
   color: #1c2b3a;
 }
 
-.income-meta {
+.income-meta,
+.expense-meta {
   font-size: 0.78rem;
   color: #7b8a8d;
 }
 
-.income-amount {
+.income-amount,
+.expense-amount {
   font-size: 0.95rem;
   font-weight: 700;
   color: #345852;
@@ -345,7 +352,8 @@
   cursor: pointer;
 }
 
-.income-actions {
+.income-actions,
+.expense-actions {
   display: flex;
   align-items: center;
   gap: 0.6rem;

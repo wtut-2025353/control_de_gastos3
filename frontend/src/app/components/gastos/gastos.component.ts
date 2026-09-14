@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { IdleService } from '../../services/idle.service';
 
-interface Income {
+interface Expense {
   _id: string;
   description: string;
   amount: number;
@@ -15,21 +15,23 @@ interface Income {
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  salario: 'Salario',
-  freelance: 'Freelance',
-  inversiones: 'Inversiones',
-  regalos: 'Regalos',
+  alimentos: 'Alimentos',
+  transporte: 'Transporte',
+  hogar: 'Hogar',
+  entretenimiento: 'Entretenimiento',
+  salud: 'Salud',
+  educacion: 'Educación',
   otros: 'Otros'
 };
 
 @Component({
-  selector: 'app-ingresos',
+  selector: 'app-gastos',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './ingresos.component.html',
-  styleUrl: './ingresos.component.css'
+  templateUrl: './gastos.component.html',
+  styleUrl: './gastos.component.css'
 })
-export class IngresosComponent implements OnInit {
+export class GastosComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -41,7 +43,7 @@ export class IngresosComponent implements OnInit {
   loadingList = signal(true);
   successMessage = signal('');
   errorMessage = signal('');
-  incomes = signal<Income[]>([]);
+  expenses = signal<Expense[]>([]);
 
   description = '';
   amount: number | null = null;
@@ -62,7 +64,7 @@ export class IngresosComponent implements OnInit {
     }
     const today = new Date();
     this.date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    this.loadIncomes();
+    this.loadExpenses();
     this.idleService.start();
   }
 
@@ -70,11 +72,11 @@ export class IngresosComponent implements OnInit {
     this.idleService.stop();
   }
 
-  loadIncomes(): void {
+  loadExpenses(): void {
     this.loadingList.set(true);
-    this.http.get<Income[]>('/api/incomes').subscribe({
+    this.http.get<Expense[]>('/api/expenses').subscribe({
       next: (data) => {
-        this.incomes.set(data);
+        this.expenses.set(data);
         this.updateTotal();
         this.loadingList.set(false);
       },
@@ -85,27 +87,27 @@ export class IngresosComponent implements OnInit {
   }
 
   updateTotal(): void {
-    const sum = this.incomes().reduce((acc, i) => acc + Number(i.amount), 0);
+    const sum = this.expenses().reduce((acc, e) => acc + Number(e.amount), 0);
     this.total.set(sum);
   }
 
-  filteredIncomes(): Income[] {
+  filteredExpenses(): Expense[] {
     const q = this.searchText.trim().toLowerCase();
-    if (!q) return this.incomes();
-    return this.incomes().filter((i) =>
-      i.description.toLowerCase().includes(q) ||
-      this.getCategoryLabel(i.category).toLowerCase().includes(q)
+    if (!q) return this.expenses();
+    return this.expenses().filter((e) =>
+      e.description.toLowerCase().includes(q) ||
+      this.getCategoryLabel(e.category).toLowerCase().includes(q)
     );
   }
 
   totalPages(): number {
-    return Math.max(1, Math.ceil(this.filteredIncomes().length / this.pageSize));
+    return Math.max(1, Math.ceil(this.filteredExpenses().length / this.pageSize));
   }
 
-  pagedIncomes(): Income[] {
+  pagedExpenses(): Expense[] {
     const page = Math.min(this.currentPage(), this.totalPages());
     const start = (page - 1) * this.pageSize;
-    return this.filteredIncomes().slice(start, start + this.pageSize);
+    return this.filteredExpenses().slice(start, start + this.pageSize);
   }
 
   onSearchChange(): void {
@@ -120,12 +122,12 @@ export class IngresosComponent implements OnInit {
     this.currentPage.update((p) => Math.min(this.totalPages(), p + 1));
   }
 
-  startEdit(income: Income): void {
-    this.editingId = income._id;
-    this.description = income.description;
-    this.amount = income.amount;
-    this.category = income.category;
-    this.date = income.date.split('T')[0];
+  startEdit(expense: Expense): void {
+    this.editingId = expense._id;
+    this.description = expense.description;
+    this.amount = expense.amount;
+    this.category = expense.category;
+    this.date = expense.date.split('T')[0];
     this.errorMessage.set('');
     this.successMessage.set('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -140,17 +142,17 @@ export class IngresosComponent implements OnInit {
     this.date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   }
 
-  deleteIncome(id: string): void {
-    if (!confirm('¿Eliminar este ingreso?')) return;
-    this.http.delete(`/api/incomes/${id}`).subscribe({
+  deleteExpense(id: string): void {
+    if (!confirm('¿Eliminar este gasto?')) return;
+    this.http.delete(`/api/expenses/${id}`).subscribe({
       next: () => {
-        this.incomes.update((list) => list.filter((i) => i._id !== id));
+        this.expenses.update((list) => list.filter((e) => e._id !== id));
         this.updateTotal();
-        this.successMessage.set('Ingreso eliminado correctamente');
+        this.successMessage.set('Gasto eliminado correctamente');
         setTimeout(() => this.successMessage.set(''), 3000);
       },
       error: (error) => {
-        this.errorMessage.set(error?.error?.message ?? 'Error al eliminar el ingreso');
+        this.errorMessage.set(error?.error?.message ?? 'Error al eliminar el gasto');
       }
     });
   }
@@ -177,28 +179,28 @@ export class IngresosComponent implements OnInit {
     };
 
     if (this.editingId) {
-      this.http.put<Income>(`/api/incomes/${this.editingId}`, body).subscribe({
+      this.http.put<Expense>(`/api/expenses/${this.editingId}`, body).subscribe({
         next: (updated) => {
-          this.incomes.update((list) => list.map((i) => (i._id === updated._id ? updated : i)));
+          this.expenses.update((list) => list.map((e) => (e._id === updated._id ? updated : e)));
           this.updateTotal();
-          this.successMessage.set('Ingreso actualizado correctamente');
+          this.successMessage.set('Gasto actualizado correctamente');
           this.cancelEdit();
           this.loading.set(false);
           setTimeout(() => this.successMessage.set(''), 3000);
         },
         error: (error) => {
           this.loading.set(false);
-          this.errorMessage.set(error?.error?.message ?? 'Error al actualizar el ingreso');
+          this.errorMessage.set(error?.error?.message ?? 'Error al actualizar el gasto');
         }
       });
       return;
     }
 
-    this.http.post<Income>('/api/incomes', body).subscribe({
+    this.http.post<Expense>('/api/expenses', body).subscribe({
       next: (created) => {
-        this.incomes.update((list) => [created, ...list]);
+        this.expenses.update((list) => [created, ...list]);
         this.updateTotal();
-        this.successMessage.set('Ingreso registrado correctamente');
+        this.successMessage.set('Gasto registrado correctamente');
         this.description = '';
         this.amount = null;
         this.category = 'otros';
@@ -209,7 +211,7 @@ export class IngresosComponent implements OnInit {
       },
       error: (error) => {
         this.loading.set(false);
-        this.errorMessage.set(error?.error?.message ?? 'Error al guardar el ingreso');
+        this.errorMessage.set(error?.error?.message ?? 'Error al guardar el gasto');
       }
     });
   }
@@ -232,8 +234,8 @@ export class IngresosComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-  goGastos(): void {
-    this.router.navigate(['/gastos']);
+  goIngresos(): void {
+    this.router.navigate(['/ingresos']);
   }
 
   goReportes(): void {

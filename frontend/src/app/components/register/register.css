@@ -1,0 +1,280 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+.split {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* ---------- Columna izquierda (brand) ---------- */
+.panel-left {
+  display: none;
+}
+
+/* ---------- Columna derecha (formulario) ---------- */
+.panel-right {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  background: linear-gradient(160deg, #f4f6f6 0%, #e5e9ea 100%);
+  overflow: hidden;
+}
+
+.panel-right::before,
+.panel-right::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(70px);
+}
+
+.panel-right::before {
+  width: 420px;
+  height: 420px;
+  background: rgba(143, 166, 164, 0.3);
+  top: -140px;
+  right: -140px;
+}
+
+.panel-right::after {
+  width: 380px;
+  height: 380px;
+  background: rgba(52, 88, 82, 0.16);
+  bottom: -160px;
+  left: -120px;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border: 1px solid #ced3d4;
+  border-radius: 20px;
+  padding: 2.75rem 2rem;
+  box-shadow: 0 24px 60px -24px rgba(28, 43, 58, 0.28);
+}
+
+.brand-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 3rem;
+}
+
+.brand-inline .logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.brand-inline .brand-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #1c2b3a;
+}
+
+.form-box h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1c2b3a;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  color: #7b8a8d;
+  font-size: 0.95rem;
+  margin: 0 0 2.25rem;
+}
+
+.subtitle a {
+  color: #4b706b;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.error {
+  background: #fdecec;
+  color: #b00020;
+  border: 1px solid #f5c6c6;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.field {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.field input {
+  width: 100%;
+  padding: 0.65rem 0;
+  font-size: 1rem;
+  color: #1c2b3a;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #ced3d4;
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.field input::placeholder {
+  color: #949ca4;
+}
+
+.field input:focus {
+  border-bottom-color: #345852;
+}
+
+.password-field input {
+  padding-right: 2.5rem;
+}
+
+.eye-toggle {
+  position: absolute;
+  top: 0.55rem;
+  right: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #949ca4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.eye-toggle:hover {
+  color: #1c2b3a;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #1c2b3a;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---------- Desktop: split 2 columnas ---------- */
+@media (min-width: 900px) {
+  .split {
+    flex-direction: row;
+  }
+
+  .panel-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0 0 45%;
+    padding: 3rem 3.5rem;
+    background-color: #345852;
+    background-image: linear-gradient(140deg, rgba(28, 43, 58, 0.82), rgba(52, 88, 82, 0.86)),
+      url('/fondo-login.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .panel-left .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .panel-left .brand .logo-invert {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .panel-left .brand-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .panel-left .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+  }
+
+  .panel-left .hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    margin: 0 0 1.5rem;
+  }
+
+  .panel-left .hero p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 380px;
+  }
+
+  .panel-left .copyright {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.8rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .panel-left .decor {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 72%;
+    height: auto;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .panel-right {
+    flex: 1;
+    align-items: center;
+    padding: 3rem 4rem;
+  }
+}

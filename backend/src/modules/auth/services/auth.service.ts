@@ -11,6 +11,8 @@ export interface AuthUserPayload {
   name: string;
   email: string;
   role: string;
+  avatar?: string | null;
+  googleId?: string | null;
 }
 
 export interface AuthResult {
@@ -40,8 +42,10 @@ function toPayload(user: {
   name: string;
   email: string;
   role: string;
+  avatar?: string | null;
+  googleId?: string | null;
 }): AuthUserPayload {
-  return { id: String(user._id), name: user.name, email: user.email, role: user.role };
+  return { id: String(user._id), name: user.name, email: user.email, role: user.role, avatar: user.avatar ?? null, googleId: user.googleId ?? null };
 }
 
 export async function loginWithEmail(email: string, password: string): Promise<AuthResult> {
@@ -53,6 +57,33 @@ export async function loginWithEmail(email: string, password: string): Promise<A
   if (!valid) {
     throw new AuthError("Credenciales inválidas", 401);
   }
+  const payload = toPayload(user);
+  return { token: signToken(payload), user: payload };
+}
+
+export async function registerUser(name: string, email: string, password: string): Promise<AuthResult> {
+  const trimmedName = name.trim();
+  const trimmedEmail = email.trim().toLowerCase();
+  if (trimmedName.length < 2) {
+    throw new AuthError("El nombre debe tener al menos 2 caracteres");
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+    throw new AuthError("El correo no es válido");
+  }
+  if (!password || password.length < 6) {
+    throw new AuthError("La contraseña debe tener al menos 6 caracteres");
+  }
+  const exists = await User.findOne({ email: trimmedEmail });
+  if (exists) {
+    throw new AuthError("Ya existe una cuenta con ese correo");
+  }
+  const hashed = await bcrypt.hash(password, 10);
+  const user = await User.create({
+    name: trimmedName,
+    email: trimmedEmail,
+    password: hashed,
+    role: "user"
+  });
   const payload = toPayload(user);
   return { token: signToken(payload), user: payload };
 }
@@ -86,10 +117,18 @@ export async function loginWithGoogle(credential: string): Promise<AuthResult> {
       avatar: payload.picture,
       role: "user"
     });
-  } else if (!user.googleId) {
-    user.googleId = payload.sub;
-    if (payload.picture) user.avatar = payload.picture;
-    await user.save();
+  } else {
+    let changed = false;
+    if (!user.googleId && payload.sub) {
+      user.googleId = payload.sub;
+      changed = true;
+    }
+    // Sincronizar siempre la foto de Google para que el perfil la muestre actualizada
+    if (payload.picture && user.avatar !== payload.picture) {
+      user.avatar = payload.picture;
+      changed = true;
+    }
+    if (changed) await user.save();
   }
 
   const result = toPayload(user);

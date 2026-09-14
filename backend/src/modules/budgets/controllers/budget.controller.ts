@@ -14,7 +14,8 @@ export async function createBudgetHandler(req: Request, res: Response): Promise<
     const budget = await createOrUpdateBudget(req.user.id, req.body);
     res.status(201).json(budget);
   } catch (error) {
-    res.status(400).json({ message: "Error al crear presupuesto" });
+    const message = error instanceof Error ? error.message : "Error al crear presupuesto";
+    res.status(400).json({ message });
   }
 }
 
